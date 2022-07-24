@@ -1,49 +1,24 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import "./App.css";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Route, Routes } from "react-router-dom";
+import DetailsPage from "./pages/client/DetailsPage";
+import HomePage from "./pages/client/HomePage";
+import MapPage from "./pages/client/MapPage";
+import RentPage from "./pages/client/RentPage";
+import ClientSignIn from "./pages/client/SignIn";
+import ClientSignUp from "./pages/client/SignUp";
 
-import Home from "./components/homepage";
-import Rooms from "./components/rooms";
-import Details from "./components/details";
-import Dashboard from "./components/dashboard";
-import ClassicFormPage from "./components/intro";
-import AdminLogin from "./components/adminLogin";
-import Contact from './components/contact';
-import Map from './components/map';
-import About from './components/about';
-import { fetchData } from "./store/actions/actions";
-import {connect} from 'react-redux'
-
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  componentDidMount() { 
-    this.props.dispatch(fetchData())
-    
-  }
-
-  render() {
-    return (
-      <Router>
-        <div>
-          <Route exact={true} path="/" component={ClassicFormPage} />
-          <Route exact={true} path="/home" component={Home} />
-          <Route exact={true} path="/rooms" component={Rooms} />
-          <Route exact={true} path="/contact" component={Contact} />
-          <Route exact={true} path="/about" component={About} />
-          <Route exact={true} path="/map" component={Map} />
-          <Route exact={true} path="/details/:id" component={Details} />
-          <Route exact={true} path="/rooms/:type" component={Rooms} />
-          <Route exact={true} path="/dashboard" component={Dashboard} />
-          <Route exact={true} path="/admin" component={AdminLogin} />
-        </div>
-      </Router>
-    );
-  }
+function App() {
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<ClientSignIn />} />
+        <Route path="/signup" element={<ClientSignUp />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/rent" element={<RentPage />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/details" element={<DetailsPage />} />
+      </Routes>
+    </div>
+  );
 }
 
-export default connect()(App);
+export default App;
