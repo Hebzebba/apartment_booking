@@ -50,7 +50,7 @@ const connectToDb = () => {
 }
 
 // app initialization
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT || PORT, () => {
   connectToDb()
-  console.log('Listening on port')
+  console.log(`server started on port ${PORT}`)
 })
