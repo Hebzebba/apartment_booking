@@ -1,40 +1,40 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const bodyParser = require("body-parser");
+const express = require('express')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const dotenv = require('dotenv')
+const bodyParser = require('body-parser')
 
-const app = express();
-const userRoute = require("./routes/userRoute.js");
-const adsRouter = require("./routes/advertisementRoute.js");
+const app = express()
+const userRoute = require('./routes/userRoute.js')
+const adsRouter = require('./routes/advertisementRoute.js')
 
-dotenv.config();
-const PORT = 5001;
+dotenv.config()
+const PORT = 5001
 
 let corsOptions = {
-  origin: "*",
+  origin: '*',
   optionsSuccessStatus: 200,
-};
+}
 
 // Middleware
 app.use(
   bodyParser.urlencoded({
     extended: false,
-  })
-);
-app.use(cors(corsOptions));
-app.use("/api/user", userRoute);
-app.use("/api/ads", adsRouter);
-app.use("/public", express.static(__dirname + "/public"));
+  }),
+)
+app.use(cors(corsOptions))
+app.use('/api/user', userRoute)
+app.use('/api/ads', adsRouter)
+app.use('/public', express.static(__dirname + '/public'))
 
 // Error handling
 app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.message || "Something went wrong from the server side";
+  const status = err.status || 500
+  const message = err.message || 'Something went wrong from the server side'
   return res.status(status).json({
     message,
-  });
-});
+  })
+})
 
 // MongoDB
 const connectToDb = () => {
@@ -44,13 +44,13 @@ const connectToDb = () => {
       useUnifiedTopology: true,
     })
     .then((res) => {
-      console.log("Connected to db");
+      console.log('Connected to db')
     })
-    .catch((err) => console.log("error occured"));
-};
+    .catch((err) => console.log('error occured'))
+}
 
 // app initialization
-app.listen(PORT, () => {
-  connectToDb();
-  console.log("Listening on port");
-});
+app.listen(process.env.PORT || 5000, () => {
+  connectToDb()
+  console.log('Listening on port')
+})
