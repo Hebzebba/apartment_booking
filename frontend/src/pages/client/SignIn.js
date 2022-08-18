@@ -1,3 +1,4 @@
+import { useState } from "react";
 import brand from "../../assets/brand.png";
 import google_ico from "../../assets/google.png";
 import Or from "../../assets/Or.png";
@@ -5,8 +6,21 @@ import location from "../../assets/Frame83.png";
 import home from "../../assets/Frame82.png";
 import life from "../../assets/Frame80.png";
 import projects from "../../assets/Frame81.png";
+import { loginUser } from "../../api/userApi";
+import { Link, useNavigate } from "react-router-dom";
 
 const ClientSignIn = () => {
+  const [email, setEamil] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await loginUser(email, password);
+    if (response.message === "User login successful")
+      localStorage.setItem("user_email", response.user.email);
+    localStorage.setItem("user_name", response.user.name);
+    navigate("/", { replace: true });
+  };
   return (
     <div className="container mx-auto flex justify-center items-center h-screen">
       <div className="sign-up-container shadow-sm shadow-slate-500 w-full flex h-4/5">
@@ -64,12 +78,14 @@ const ClientSignIn = () => {
               <span className="mx-4">Connect with google</span>
             </div>
             <img src={Or} alt="..." />
-            <form className="w-full">
+            <form className="w-full" onSubmit={handleSubmit}>
               <div className="form-group my-5">
                 <input
                   type="email"
                   placeholder="Email"
                   className="w-full p-1"
+                  onChange={(e) => setEamil(e.target.value)}
+                  value={email}
                 />
               </div>
               <div className="form-group my-5">
@@ -77,6 +93,8 @@ const ClientSignIn = () => {
                   type="password"
                   placeholder="Password"
                   className="w-full p-1"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
 
@@ -87,9 +105,11 @@ const ClientSignIn = () => {
                 SIGN IN
               </button>
               <div>
-                <span>
-                  Not a menber? <small>Sign Up</small> now!
-                </span>
+                <Link to="/signup">
+                  <span>
+                    Not a menber? <small>Sign Up</small> now!
+                  </span>
+                </Link>
               </div>
             </form>
           </div>

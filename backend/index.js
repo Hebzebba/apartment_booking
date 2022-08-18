@@ -1,55 +1,56 @@
 const express = require("express");
-const cor = require("cors");
-const path = require("path");
-const router = require("./routes/router");
-
 const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 
 const app = express();
-const port = 5000;
-const data = require("./data");
-const bodyParser = require("body-parser");
-// const fileUpload = require('express-fileupload');
+const userRoute = require("./routes/userRoute.js");
+const adsRouter = require("./routes/advertisementRoute.js");
 
+dotenv.config();
+const PORT = 5001;
 
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "./public")));
+let corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+};
 
+// Middleware
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  })
+);
+app.use(cors(corsOptions));
+app.use("/api/user", userRoute);
+app.use("/api/ads", adsRouter);
+app.use("/public", express.static(__dirname + "/public"));
 
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-app.use(cor());
-app.use(router);
-
-mongoose.connect("mongodb://localhost:27017/hostelBooking", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function () {
-  // console.log("Connected");
+// Error handling
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || "Something went wrong from the server side";
+  return res.status(status).json({
+    message,
+  });
 });
 
-app.get("/api/:id", (req, res) => {
-  const singleData = data.find((data) => data._id === req.params.id);
-  res.send(singleData);
-});
+// MongoDB
+const connectToDb = () => {
+  mongoose
+    .connect(process.env.MONGO, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then((res) => {
+      console.log("Connected to db");
+    })
+    .catch((err) => console.log("error occured"));
+};
 
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
-});
-app.get("/api/", (req, res) => {
-  res.send(data);
+// app initialization
+app.listen(PORT, () => {
+  connectToDb();
+  console.log("Listening on port");
 });
