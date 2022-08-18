@@ -2,7 +2,6 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require('dotenv')
-const bodyParser = require('body-parser')
 
 const app = express()
 const userRoute = require('./routes/userRoute.js')
@@ -17,12 +16,8 @@ let corsOptions = {
 }
 
 // Middleware
-app.use(
-  bodyParser.urlencoded({
-    extended: false,
-  }),
-)
 app.use(cors(corsOptions))
+app.use(express.json())
 app.use('/api/user', userRoute)
 app.use('/api/ads', adsRouter)
 app.use('/public', express.static(__dirname + '/public'))
